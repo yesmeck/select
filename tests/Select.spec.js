@@ -1,5 +1,5 @@
 import expect from 'expect.js';
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils, { Simulate } from 'react-addons-test-utils';
 import Select, { Option } from 'rc-select';
@@ -173,6 +173,38 @@ describe('Select', () => {
 
     it('should show search input in single selection trigger', (done) => {
       expect($(instance.getInputDOMNode()).parents('.rc-select-open').length).to.be(1);
+      done();
+    });
+  });
+
+  it('display correct combobox label when it\'s under controllered', (done) => {
+    class App extends Component {
+      state = {
+        value: {
+          label: '',
+          key: '',
+        },
+      }
+
+      render() {
+        return (
+          <Select
+            combobox
+            labelInValue
+            value={this.state.value}
+            optionLabelProp="children"
+          >
+            <Option value="1">One</Option>
+            <Option value="2">Two</Option>
+          </Select>
+        );
+      }
+    }
+
+    instance = ReactDOM.render(<App />, div);
+    instance.setState({ value: { label: 'One', key: '1' } }, () => {
+      const input = TestUtils.findRenderedDOMComponentWithTag(instance, 'input');
+      expect(input.value).to.be('One');
       done();
     });
   });
