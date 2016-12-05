@@ -4,6 +4,7 @@ import { mount } from 'enzyme';
 import KeyCode from 'rc-util/lib/KeyCode';
 import Select from '../../src/Select';
 import Option from '../../src/Option';
+import { castValue } from '../util';
 
 export default function removeSelectedTest(mode) {
   describe('remove selected options', () => {
@@ -12,19 +13,19 @@ export default function removeSelectedTest(mode) {
       const handleChange = jest.fn();
       const wrapper = mount(
         <Select
-          value={['1', '2']}
+          value={[castValue('1'), castValue('2')]}
           onChange={handleChange}
           onDeselect={handleDeselect}
           {...{ [mode]: true }}
         >
-          <Option value="1">1</Option>
-          <Option value="2">2</Option>
+          <Option value={castValue('1')}>1</Option>
+          <Option value={castValue('2')}>2</Option>
         </Select>
       );
       wrapper.find('.rc-select-selection__choice__remove').first().simulate('click');
 
-      expect(handleDeselect).toBeCalledWith('1');
-      expect(handleChange).toBeCalledWith(['2']);
+      expect(handleDeselect).toBeCalledWith(castValue('1'));
+      expect(handleChange).toBeCalledWith([castValue('2')]);
     });
 
     it('noop if select is disabled', () => {
@@ -32,14 +33,14 @@ export default function removeSelectedTest(mode) {
       const handleChange = jest.fn();
       const wrapper = mount(
         <Select
-          value={['1']}
+          value={[castValue('1')]}
           onChange={handleChange}
           onDeselect={handleDeselect}
           disabled
           {...{ [mode]: true }}
         >
-          <Option value="1">1</Option>
-          <Option value="2">2</Option>
+          <Option value={castValue('1')}>1</Option>
+          <Option value={castValue('2')}>2</Option>
         </Select>
       );
       wrapper.find('.rc-select-selection__choice__remove').first().simulate('click');
@@ -53,44 +54,54 @@ export default function removeSelectedTest(mode) {
       const handleChange = jest.fn();
       const wrapper = mount(
         <Select
-          value={[{ key: '1' }, { key: '2' }]}
+          value={[{ key: castValue('1') }, { key: castValue('2') }]}
           onChange={handleChange}
           onDeselect={handleDeselect}
           labelInValue
           {...{ [mode]: true }}
         >
-          <Option value="1">1</Option>
-          <Option value="2">2</Option>
+          <Option value={castValue('1')}>1</Option>
+          <Option value={castValue('2')}>2</Option>
         </Select>
       );
       wrapper.find('.rc-select-selection__choice__remove').first().simulate('click');
 
-      expect(handleDeselect).toHaveBeenCalledWith({ key: '1', label: '1' });
-      expect(handleChange).toHaveBeenCalledWith([{ key: '2', label: '2' }]);
+      expect(handleDeselect).toHaveBeenCalledWith({
+        key: castValue('1'),
+        label: castValue('1'),
+      });
+      expect(handleChange).toHaveBeenCalledWith([{
+        key: castValue('2'),
+        label: castValue('2'),
+      }]);
     });
 
     it('remove by backspace key', () => {
       const wrapper = mount(
         <Select
-          defaultValue={['1', '2']}
+          defaultValue={[castValue('1'), castValue('2')]}
           {...{ [mode]: true }}
         >
-          <Option value="1">1</Option>
-          <Option value="2">2</Option>
+          <Option value={castValue('1')}>1</Option>
+          <Option value={castValue('2')}>2</Option>
         </Select>
       );
 
       wrapper.find('input').simulate('keyDown', { keyCode: KeyCode.BACKSPACE });
-      expect(wrapper.state().value).toEqual([{ key: '1', label: '1', title: undefined }]);
+      expect(wrapper.state().value).toEqual([{
+        key: castValue('1'),
+        label: castValue('1'),
+        title: undefined,
+      }]);
     });
 
     it('remove by menu deselect', () => {
       const wrapper = mount(
         <Select
-          defaultValue={['1']}
+          defaultValue={[castValue('1')]}
           {...{ [mode]: true }}
         >
-          <Option value="1">1</Option>
+          <Option value={castValue('1')}>1</Option>
         </Select>
       );
 
